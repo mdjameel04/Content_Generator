@@ -12,7 +12,7 @@ const SideNav = () => {
       console.log(path)
     },[])
   return (
-    <div className='h-screen p-5 shadow-sm border'>
+    <div className='h-screen p-5 shadow-sm border bg-white'>
         <div className='flex justify-center'>
             <Image src={"/content-logo.png"} alt='logo' width={60} height={60}/>
         </div>
