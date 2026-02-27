@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
+import { useUser } from "@clerk/nextjs";
+import { saveAiOutput } from "@/actions/saveAiOutput";
+
 interface PROPS {
   params: {
     "template-slug": string;
@@ -18,7 +21,7 @@ interface PROPS {
 
 const CreateNewContent = (props: PROPS) => {
   const params = useParams();
-
+const { user } = useUser();
   const selectedTemplate: TEMPLATE | undefined = Templates?.find(
     (item) => item.slug === params["template-slug"]
   );
@@ -27,32 +30,41 @@ const CreateNewContent = (props: PROPS) => {
   const [aiOutput, setAiOutput] = useState<string>("");
 
   // ✅ FINAL AI FUNCTION (Groq API route)
-  const GenerateAIContent = async (formData: any) => {
-    try {
-      setLoading(true);
+ const GenerateAIContent = async (formData: any) => {
+  try {
+    setLoading(true);
 
-      if (!selectedTemplate) return;
+    if (!selectedTemplate) return;
 
-      const FinalAIPrompt =
-        JSON.stringify(formData) + ", " + selectedTemplate.aiPrompt;
+    const FinalAIPrompt =
+      JSON.stringify(formData) + ", " + selectedTemplate.aiPrompt;
 
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: FinalAIPrompt }),
-      });
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt: FinalAIPrompt }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      setAiOutput(data.result);
-    } catch (error) {
-      console.log("AI Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setAiOutput(data.result);
+
+    // ✅ SAVE TO DATABASE
+    await saveAiOutput({
+      formData: formData,
+      slug: selectedTemplate.slug,
+      aiResponse: data.result,
+      userId: user?.primaryEmailAddress?.emailAddress || "unknown",
+    });
+
+  } catch (error) {
+    console.log("AI Error:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="p-5">

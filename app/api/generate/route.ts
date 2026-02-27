@@ -16,4 +16,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     result: completion.choices[0]?.message?.content,
   });
+
+
+  
 }
