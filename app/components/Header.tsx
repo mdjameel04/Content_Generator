@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import {Home, Wallet} from "lucide-react"
+import {Home, LayoutGrid, Wallet} from "lucide-react"
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs'
@@ -32,11 +32,11 @@ const Header = () => {
             Home
           </Link>
           <Link
-            href="/Pricing"
+            href="/"
             className="hover:text-orange-600 transition-colors flex gap-1.5 items-center"
           >
-            <Wallet className="w-4 h-4" />
-            Pricing
+            <LayoutGrid className="w-4 h-4" />
+            Features
           </Link>
         </div>
  
