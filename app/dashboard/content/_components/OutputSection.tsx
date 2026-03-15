@@ -5,6 +5,7 @@ import "@toast-ui/editor/dist/toastui-editor.css";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 const Editor = dynamic(
   () => import("@toast-ui/react-editor").then((mod) => mod.Editor),
@@ -32,6 +33,7 @@ const OutputSection = ({ aiOutput }: Props) => {
 
     const content = editorRef.current.getInstance().getMarkdown();
     navigator.clipboard.writeText(content);
+    toast("Copied")
   };
 
   return (
